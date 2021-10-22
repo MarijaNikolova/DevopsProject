@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gitea
+  labels:
+    app: gitea
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gitea
+  template:
+    metadata:
+      labels:
+        app: gitea
+    spec:
+      containers:
+      - name: gitea
+        image: gitea/gitea
+        ports:
+        - containerPort: 3000
+          name: gitea
+        - containerPort: 22
+          name: git-ssh
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gitea-service
+spec:
+  selector:
+    app: gitea
+  type: LoadBalancer
+  ports: 
+   - protocol: TCP
+     port: 3000
+     targetPort: 3000
+     nodePort: 30000
+     
